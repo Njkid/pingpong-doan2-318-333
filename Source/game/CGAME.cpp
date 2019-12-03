@@ -3,6 +3,7 @@
 CGAME::CGAME(int w, int h)
 {
 	srand(time(NULL));
+
 	quit = false;
 	//phím chơi game
 	//player 1
@@ -18,6 +19,13 @@ CGAME::CGAME(int w, int h)
 	//căn chỉnh thanh chơi game
 	player1 = new CBAR(1, h / 2 - 3);
 	player2 = new CBAR(w - 2, h / 2 - 3);
+
+	//điều chỉnh thời gian update frame
+	speed = 1000.f / 45.f;
+
+	//cài đặt chế độ chơi
+	playing_Food = false;
+	playing_Normal = false;
 }
 
 CGAME::~CGAME()
@@ -40,7 +48,7 @@ void CGAME::ScoreUp(CBAR* player)
 //Vẽ màn hình game
 void CGAME::Draw()
 {
-	system("cls");
+	//system("cls");
 	for (int i = 0; i < width + 2; i++)
 		printf("%c", 177);
 	cout << endl;
@@ -102,6 +110,9 @@ void CGAME::Draw()
 		score1 = 0;
 		score2 = 0;
 	};
+
+	CFOOD::GotoXY(0, 0);
+	Sleep(int(speed));
 }
 //hàm bắt phím khi chơi
 void CGAME::Input()
@@ -176,11 +187,45 @@ void CGAME::Logic()
 //hàm chạy game
 void CGAME::Run()
 {
+	int stylePlay = 0;
+	while (stylePlay < 1 || stylePlay > 3) {
+		stylePlay = ShowMenu();
+	}
+
+	switch (stylePlay)
+	{
+	case 1:
+		playing_Normal = true;
+		break;
+	case 2:
+		playing_Food = true;
+		break;
+	case 3:
+		quit = true;
+	}
+	
+
 	while (!quit)
 	{
 		Draw();
 		Input();
 		Logic();
 	}
+}
+
+int CGAME::ShowMenu()
+{
+	int choose = 0;
+	cout << "====================================================" << endl;
+	cout << "|                   @ PING PONG @                  |" << endl;
+	cout << "|--------------------------------------------------|" << endl;
+	cout << "|                1. Play Normal Style              |" << endl;
+	cout << "|                2. Play Eat Food Style            |" << endl;
+	cout << "|                3. Quit                           |" << endl;
+	cout << "====================================================" << endl;
+	cout << "==  YOUR CHOOSE? "; 
+	cin >> choose;
+	system("cls");
+	return choose;
 }
 

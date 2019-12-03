@@ -125,12 +125,16 @@
   <ItemGroup>
     <ClInclude Include="CBALL.h" />
     <ClInclude Include="CBAR.h" />
+    <ClInclude Include="CFOOD.h" />
     <ClInclude Include="CGAME.h" />
+    <ClInclude Include="CSAVE.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBALL.cpp" />
     <ClCompile Include="CBAR.cpp" />
+    <ClCompile Include="CFOOD.cpp" />
     <ClCompile Include="CGAME.cpp" />
+    <ClCompile Include="CSAVE.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

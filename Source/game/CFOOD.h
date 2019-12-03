@@ -12,6 +12,7 @@ private:
 public:
 	CFOOD();
 	~CFOOD();
+	static void GotoXY(int x, int y);
 public:
 	int TopLeftX();
 	int TopLeftY();
@@ -19,7 +20,7 @@ public:
 	int BotRightY();
 
 
-	void GotoXY(int x, int y);
+	
 	CFOOD(int a, int b, int c, int d);
 	eDir Check_collision(CBALL* ball);
 	void Draw_food();
