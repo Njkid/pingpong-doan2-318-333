@@ -1,0 +1,3 @@
+﻿  CGAME.cpp
+D:\KHTN\Nam2_Hocki1\OOP\DoanGit\pingpong-doan2-318-333\Source\game\CGAME.cpp(5,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  game.vcxproj -> D:\KHTN\Nam2_Hocki1\OOP\DoanGit\pingpong-doan2-318-333\Source\x64\Debug\game.exe

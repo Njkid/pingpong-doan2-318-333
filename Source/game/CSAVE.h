@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
-#include"CGAME.h"
+#include "CGAME.h"
+#include "CFOOD.h"
 #include <fstream>
 #include <string>
 #include <vector>

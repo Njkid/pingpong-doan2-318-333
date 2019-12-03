@@ -4,6 +4,7 @@
 #include <conio.h>
 #include "CBALL.h"
 #include "CBAR.h"
+#include "CFOOD.h"
 
 class CGAME
 {
@@ -15,6 +16,11 @@ private:
 	CBALL* ball;
 	CBAR* player1;
 	CBAR* player2;
+
+	float speed;
+	bool playing_Normal;
+	bool playing_Food;
+
 public:
 	CGAME(int, int);//truyền vào phím chơi game, căn chỉnh bóng và thanh chơi
 	~CGAME();
@@ -23,5 +29,6 @@ public:
 	void Input();//hàm bắt phím khi chơi
 	void Logic();//hàm xử lý chính
 	void Run();//hàm chạy game
+	int ShowMenu();
 };
 

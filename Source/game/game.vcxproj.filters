@@ -24,6 +24,12 @@
     <ClInclude Include="CBAR.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CFOOD.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CSAVE.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CGAME.cpp">
@@ -36,6 +42,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CFOOD.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSAVE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
