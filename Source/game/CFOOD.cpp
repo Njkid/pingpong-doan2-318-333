@@ -42,18 +42,45 @@ void CFOOD::GotoXY(int x, int y)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-eDir CFOOD ::Check_collision(CBALL* ball)
+vector<CFOOD> CFOOD::Generate()
 {
-	for (int i = _topLeft_y; i <= _botRight_y; i++)
+	vector<CFOOD> result;
+	srand(time(NULL));
+
+	for (int i = 0; i < 5; i++)
 	{
-		if (_topLeft_x - 1 == ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNRIGHT ? DOWNLEFT : UPLEFT;
-		if (_botRight_x + 1 == ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNLEFT ? DOWNRIGHT : UPRIGHT;
+		int x = rand() % 30 + 26;
+		int y = rand() % 15 + 2;
+		CFOOD f(x, y, x + 3, y + 2);
+
+		int j = 0;
+		for (; j < result.size(); j++)
+		{
+			if (f.IsCollision(result[j])) {
+				i--;
+				break;
+			}
+		}
+
+		if (j == result.size()) result.push_back(f);
 	}
 
-	for (int i = _topLeft_x; i <= _botRight_x; i++)
+
+	return result;
+}
+
+eDir CFOOD ::Check_collision(CBALL* ball)
+{
+	for (int i = _topLeft_y - 1 ; i < _botRight_y; i++)
+	{
+		if (_topLeft_x -1== ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNRIGHT ? DOWNLEFT : UPLEFT;
+		if (_botRight_x == ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNLEFT ? DOWNRIGHT : UPRIGHT;
+	}
+
+	for (int i = _topLeft_x -1; i <= _botRight_x; i++)
 	{
 		if (_topLeft_y - 1 == ball->getY() && i == ball->getX()) return ball->getDirection() == DOWNRIGHT ? UPRIGHT : UPLEFT;
-		if (_botRight_y + 1 == ball->getY() && i == ball->getX()) return ball->getDirection() == UPRIGHT ? DOWNRIGHT : DOWNLEFT;
+		if (_botRight_y  -1 == ball->getY() && i == ball->getX()) return ball->getDirection() == UPRIGHT ? DOWNRIGHT : DOWNLEFT;
 	}
 	return STOP;
 }
@@ -91,4 +118,14 @@ void CFOOD::Draw_food()
 	{
 		cout << "*";
 	}
+}
+
+bool CFOOD::IsCollision(CFOOD another) {
+
+	if (_topLeft_x < another._topLeft_x && _botRight_x < another._topLeft_x) return false;
+	if (_topLeft_y < another._topLeft_y && _botRight_y < another._topLeft_y) return false;
+	if (_topLeft_x > another._botRight_x&& _botRight_x > another._botRight_x) return false;
+	if (_topLeft_y > another._botRight_y&& _botRight_y > another._botRight_y) return false;
+
+	return true;
 }

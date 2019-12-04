@@ -17,6 +17,10 @@ public:
 	//xử lý di chuyển thanh chơi của 2 player khi chơi
 	inline void moveUp() { y--; }
 	inline void moveDown() { y++; }
+	//cài đặt cho chế dộ eat food
+	inline void setOriX(int value) { originalX = value; }
+	inline void setX(int value) { x = value; }
+
 	friend ostream& operator<<(ostream& o, CBAR c)
 	{
 		o << "BAR [" << c.x << "," << c.y << "]";

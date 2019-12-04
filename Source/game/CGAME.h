@@ -2,6 +2,7 @@
 #include <iostream>
 #include <time.h>
 #include <conio.h>
+#include <vector>
 #include "CBALL.h"
 #include "CBAR.h"
 #include "CFOOD.h"
@@ -20,6 +21,7 @@ private:
 	float speed;
 	bool playing_Normal;
 	bool playing_Food;
+	vector<CFOOD> foods;
 
 public:
 	CGAME(int, int);//truyền vào phím chơi game, căn chỉnh bóng và thanh chơi
@@ -30,5 +32,6 @@ public:
 	void Logic();//hàm xử lý chính
 	void Run();//hàm chạy game
 	int ShowMenu();
+	void hidecursor();
 };
 

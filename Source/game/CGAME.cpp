@@ -3,6 +3,7 @@
 CGAME::CGAME(int w, int h)
 {
 	srand(time(NULL));
+	hidecursor();
 
 	quit = false;
 	//phím chơi game
@@ -26,6 +27,9 @@ CGAME::CGAME(int w, int h)
 	//cài đặt chế độ chơi
 	playing_Food = false;
 	playing_Normal = false;
+
+	//khởi tạo foods
+	foods = CFOOD::Generate();
 }
 
 CGAME::~CGAME()
@@ -67,10 +71,10 @@ void CGAME::Draw()
 			if (j == 0)
 				printf("%c", 177);
 			if (ballx == j && bally == i)
-				cout << "o"; //ball
+				cout << "O"; //ball
 			else if (player1x == j && player1y == i)
 				printf("%c", 219); //player1
-			else if (player2x == j && player2y == i)
+			else if (player2x == j && player2y == i && playing_Normal)
 				printf("%c", 219); //player2
 
 			else if (player1x == j && player1y + 1 == i)
@@ -80,11 +84,11 @@ void CGAME::Draw()
 			else if (player1x == j && player1y + 3 == i)
 				printf("%c", 219); //player1
 
-			else if (player2x == j && player2y + 1 == i)
+			else if (player2x == j && player2y + 1 == i && playing_Normal)
 				printf("%c", 219); //player1
-			else if (player2x == j && player2y + 2 == i)
+			else if (player2x == j && player2y + 2 == i && playing_Normal)
 				printf("%c", 219); //player1
-			else if (player2x == j && player2y + 3 == i)
+			else if (player2x == j && player2y + 3 == i && playing_Normal)
 				printf("%c", 219); //player1
 			else
 				cout << " ";
@@ -110,6 +114,11 @@ void CGAME::Draw()
 		score1 = 0;
 		score2 = 0;
 	};
+
+	for (int i = 0; i < foods.size(); i++)
+	{
+		foods[i].Draw_food();
+	}
 
 	CFOOD::GotoXY(0, 0);
 	Sleep(int(speed));
@@ -148,6 +157,22 @@ void CGAME::Input()
 		if (current == 'q')
 			quit = true;
 	}
+
+	//Let CPU play for player2
+	if (bally > player2y + 2 && player2y < 17) {
+		player2->moveDown();
+	}
+	if (bally < player2y + 2 && player2y > 0) {
+		player2->moveUp();
+	}
+
+	//Let CPU play for player1
+	if (bally > player1y + 2 && player1y < 17) {
+		player1->moveDown();
+	}
+	if (bally < player1y + 2 && player1y > 0) {
+		player1->moveUp();
+	}
 }
 //hàm xử lý chính
 void CGAME::Logic()
@@ -183,6 +208,24 @@ void CGAME::Logic()
 	//left wall
 	if (ballx == 0)
 		ScoreUp(player2);
+
+	//collision with food
+	eDir collisionFood = (eDir)0;
+	for (int i = 0; i < foods.size(); i++)
+	{
+		collisionFood = foods[i].Check_collision(ball);
+		if (collisionFood == 0) continue;
+		ball->changeDirection(collisionFood);
+
+		//Effect when collsion a food
+		//examble delete food
+		for (int j = i; j < foods.size() -1; j++)
+		{
+			foods[j] = foods[j + 1];
+		}
+		foods.pop_back();
+
+	}
 }
 //hàm chạy game
 void CGAME::Run()
@@ -199,6 +242,8 @@ void CGAME::Run()
 		break;
 	case 2:
 		playing_Food = true;
+		player2->setOriX(player2->getX() + 1);
+		player2->Reset();
 		break;
 	case 3:
 		quit = true;
@@ -229,3 +274,12 @@ int CGAME::ShowMenu()
 	return choose;
 }
 
+// https://stackoverflow.com/questions/30126490/how-to-hide-console-cursor-in-c
+void CGAME::hidecursor()
+{
+	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO info;
+	info.dwSize = 100;
+	info.bVisible = FALSE;
+	SetConsoleCursorInfo(consoleHandle, &info);
+}
