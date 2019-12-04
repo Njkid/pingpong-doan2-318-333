@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "CBALL.h"
 #include <Windows.h>
 #include <vector>
@@ -19,6 +19,7 @@ public:
 	~CFOOD();
 	static void GotoXY(int x, int y);
 	static vector<CFOOD> Generate();
+	static vector<CFOOD> Obstacles();
 public:
 	int TopLeftX();
 	int TopLeftY();
@@ -31,5 +32,6 @@ public:
 	eDir Check_collision(CBALL* ball);
 	void Draw_food();
 	bool IsCollision(CFOOD);
+	void Draw_obstacles();
 };
 
