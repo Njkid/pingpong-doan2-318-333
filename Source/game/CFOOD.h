@@ -1,6 +1,11 @@
 ﻿#pragma once
 #include "CBALL.h"
 #include <Windows.h>
+#include <vector>
+#include <iostream>
+#include <time.h>
+#include <conio.h>
+
 class CFOOD
 {
 private:
@@ -13,6 +18,7 @@ public:
 	CFOOD();
 	~CFOOD();
 	static void GotoXY(int x, int y);
+	static vector<CFOOD> Generate();
 public:
 	int TopLeftX();
 	int TopLeftY();
@@ -24,5 +30,6 @@ public:
 	CFOOD(int a, int b, int c, int d);
 	eDir Check_collision(CBALL* ball);
 	void Draw_food();
+	bool IsCollision(CFOOD);
 };
 
