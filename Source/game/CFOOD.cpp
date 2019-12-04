@@ -69,6 +69,18 @@ vector<CFOOD> CFOOD::Generate()
 	return result;
 }
 
+vector<CFOOD> CFOOD::Obstacles()
+{
+	vector<CFOOD> result;
+	for (int i = 0; i < 5; i++)
+	{
+		CFOOD a(21, 1 + 4*i, 25, 4 + 4*i);
+		result.push_back(a);
+	}
+
+	return result;
+}
+
 eDir CFOOD ::Check_collision(CBALL* ball)
 {
 	for (int i = _topLeft_y - 1 ; i < _botRight_y; i++)
@@ -128,4 +140,39 @@ bool CFOOD::IsCollision(CFOOD another) {
 	if (_topLeft_y > another._botRight_y&& _botRight_y > another._botRight_y) return false;
 
 	return true;
+}
+
+void CFOOD::Draw_obstacles()
+{
+	GotoXY(_topLeft_x, _topLeft_y);
+	for (int i = _topLeft_x; i <= _botRight_x; i++)
+	{
+		cout << "#";
+	}
+	cout << endl;
+	for (int i = _topLeft_y + 1; i < _botRight_y; i++)
+	{
+		GotoXY(_topLeft_x, i);
+		for (int j = _topLeft_x; j <= _botRight_x; j++)
+		{
+			if (j == _topLeft_x)
+			{
+				cout << "#";
+			}
+			else if (j == _botRight_x)
+			{
+				cout << "#";
+			}
+			else
+			{
+				cout << "#";
+			}
+		}
+		cout << endl;
+	}
+	GotoXY(_topLeft_x, _botRight_y);
+	for (int i = _topLeft_x; i <= _botRight_x; i++)
+	{
+		cout << "#";
+	}
 }
