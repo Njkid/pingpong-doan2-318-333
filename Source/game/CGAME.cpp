@@ -103,6 +103,7 @@ void CGAME::Draw()
 		printf("%c", 177);
 	cout << endl;
 
+	//Win for playing with style Normal
 	cout << "Player 1: " << score1 << endl << "Player 2: " << score2 << endl;
 	if (score1 == 5 || score2 == 5) {
 		cout << " Congrats,you won!!!";
@@ -115,6 +116,21 @@ void CGAME::Draw()
 		score2 = 0;
 	};
 
+
+	// WIN for playing with style Eating Food
+	if (foods.size() == 0) {
+		cout << " Congrats,you won!!!";
+		cout << "\n Press any key to play again ^^";
+		system("pause");
+		ball->Reset();
+		player1->Reset();
+		player2->Reset();
+		foods = CFOOD::Generate();
+		score1 = 0;
+		score2 = 0;
+	}
+
+	// Draw food
 	for (int i = 0; i < foods.size(); i++)
 	{
 		foods[i].Draw_food();
