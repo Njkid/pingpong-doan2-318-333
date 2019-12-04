@@ -1,4 +1,4 @@
-﻿#include "CGAME.h"
+#include "CGAME.h"
 //truyền vào phím chơi game, căn chỉnh bóng và thanh chơi
 CGAME::CGAME(int w, int h)
 {
@@ -136,6 +136,18 @@ void CGAME::Draw()
 		foods[i].Draw_food();
 	}
 
+	// Draw obstacles
+	if (time1 < 5)
+	{
+		time1 = (clock() - t) / 10000;
+	}
+	obstacles = CFOOD::Obstacles();
+	for (int i = 0; i < time1; i++)
+	{
+		obstacles[i].Draw_obstacles();
+	}
+
+
 	CFOOD::GotoXY(0, 0);
 	Sleep(int(speed));
 }
@@ -175,12 +187,12 @@ void CGAME::Input()
 	}
 
 	//Let CPU play for player2
-	if (bally > player2y + 2 && player2y < 17) {
+	/*if (bally > player2y + 2 && player2y < 17) {
 		player2->moveDown();
 	}
 	if (bally < player2y + 2 && player2y > 0) {
 		player2->moveUp();
-	}
+	}*/
 
 	//Let CPU play for player1
 	if (bally > player1y + 2 && player1y < 17) {
@@ -219,8 +231,12 @@ void CGAME::Logic()
 	if (bally == 0)
 		ball->changeDirection(ball->getDirection() == UPRIGHT ? DOWNRIGHT : DOWNLEFT);
 	//right wall
-	if (ballx == width - 1)
+	if (ballx == width - 1 && stylePlay == 1)
 		ScoreUp(player1);
+	if (ballx == width - 1)
+	{
+		ball->changeDirection(ball->getDirection() == DOWNRIGHT ? DOWNLEFT : UPLEFT);
+	}
 	//left wall
 	if (ballx == 0)
 		ScoreUp(player2);
@@ -242,11 +258,17 @@ void CGAME::Logic()
 		foods.pop_back();
 
 	}
+	for (int i = 0; i < time1; i++)
+	{
+		if (obstacles[i].Check_collision(ball) != STOP)
+		{
+			ball->changeDirection(obstacles[i].Check_collision(ball));
+		}
+	}
 }
 //hàm chạy game
 void CGAME::Run()
 {
-	int stylePlay = 0;
 	while (stylePlay < 1 || stylePlay > 3) {
 		stylePlay = ShowMenu();
 	}
@@ -265,7 +287,7 @@ void CGAME::Run()
 		quit = true;
 	}
 	
-
+	t = clock();
 	while (!quit)
 	{
 		Draw();
