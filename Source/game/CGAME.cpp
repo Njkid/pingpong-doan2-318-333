@@ -22,7 +22,7 @@ CGAME::CGAME(int w, int h)
 	player2 = new CBAR(w - 2, h / 2 - 3);
 
 	//điều chỉnh thời gian update frame
-	speed = 1000.f / 45.f;
+	speed = 1000.f / 120.f;
 
 	//cài đặt chế độ chơi
 	playing_Food = false;
@@ -126,6 +126,22 @@ void CGAME::Draw()
 		player1->Reset();
 		player2->Reset();
 		foods = CFOOD::Generate();
+		score1 = 0;
+		score2 = 0;
+	}
+
+	// LOSE because of time over
+	if (time1 == 5)
+	{
+		cout << " TIME OVER,you lose!!!";
+		cout << "\n Press any key to play again ^^";
+		system("pause");
+		ball->Reset();
+		player1->Reset();
+		player2->Reset();
+		foods = CFOOD::Generate();
+		time1 = -1;
+		t = clock();
 		score1 = 0;
 		score2 = 0;
 	}
@@ -258,6 +274,8 @@ void CGAME::Logic()
 		foods.pop_back();
 
 	}
+
+	// check collision with obstacles
 	for (int i = 0; i < time1; i++)
 	{
 		if (obstacles[i].Check_collision(ball) != STOP)
