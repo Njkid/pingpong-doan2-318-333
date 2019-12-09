@@ -12,7 +12,9 @@ public:
 	CSAVE();
 	~CSAVE();
 public:
-	void Save(CBALL ball, CBAR bar_left, CBAR bar_right, vector<CFOOD> food);
-	void High_scores(int score);
+	static vector<int> Load_game();
+	static void Save(CBALL *ball, CBAR *bar_left, vector<CFOOD> food, int time1);
+	static vector<string> Load_highscores();
+public:
+	void High_scores(int score, string name1);
 };
-
