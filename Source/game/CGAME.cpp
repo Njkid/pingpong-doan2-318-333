@@ -67,29 +67,68 @@ void CGAME::Draw()
 			int player2x = player2->getX();
 			int player1y = player1->getY();
 			int player2y = player2->getY();
+			// Update coordinate ball and player1 when save
+			if (save == true)
+			{
+				ball->SetX(file_save[0]);
+				ball->SetY(file_save[1]);
+				switch (file_save[2])
+				{
+				case 0:
+					ball->changeDirection(STOP);
+					break;
+				case 1:
+					ball->changeDirection(LEFT);
+					break;
+				case 2:
+					ball->changeDirection(RIGHT);
+					break;
+				case 3:
+					ball->changeDirection(UPLEFT);
+					break;
+				case 4:
+					ball->changeDirection(DOWNLEFT);
+					break;
+				case 5:
+					ball->changeDirection(UPRIGHT);
+					break;
+				case 6:
+					ball->changeDirection(DOWNRIGHT);
+					break;
+				}
+			}
 
 			if (j == 0)
 				printf("%c", 177);
-			if (ballx == j && bally == i)
+			if (ballx == j && bally == i && save != true)
 				cout << "O"; //ball
-			else if (player1x == j && player1y == i)
+			else if(save == true && file_save[0] == j && file_save[1]== i)
+				cout << "O"; //ball saved
+			else if (player1x == j && player1y == i && save != true)
 				printf("%c", 219); //player1
+			else if (save == true && file_save[3] == j && file_save[4] == i)
+				printf("%c", 219); //player1 saved
 			else if (player2x == j && player2y == i && playing_Normal)
 				printf("%c", 219); //player2
 
-			else if (player1x == j && player1y + 1 == i)
+			else if (player1x == j && player1y + 1 == i && save != true)
 				printf("%c", 219); //player1
-			else if (player1x == j && player1y + 2 == i)
+			else if (player1x == j && player1y + 2 == i && save != true)
 				printf("%c", 219); //player1
-			else if (player1x == j && player1y + 3 == i)
+			else if (player1x == j && player1y + 3 == i && save != true)
 				printf("%c", 219); //player1
-
+			else if (save == true && file_save[3] == j && file_save[4] + 1 == i)
+				printf("%c", 219); //player1 saved
+			else if (save == true && file_save[3] == j && file_save[4] + 2 == i)
+				printf("%c", 219); //player1 saved
+			else if (save == true && file_save[3] == j && file_save[4] + 3 == i)
+				printf("%c", 219); //player1 saved
 			else if (player2x == j && player2y + 1 == i && playing_Normal)
-				printf("%c", 219); //player1
+				printf("%c", 219); //player2
 			else if (player2x == j && player2y + 2 == i && playing_Normal)
-				printf("%c", 219); //player1
+				printf("%c", 219); //player2
 			else if (player2x == j && player2y + 3 == i && playing_Normal)
-				printf("%c", 219); //player1
+				printf("%c", 219); //player2
 			else
 				cout << " ";
 
@@ -112,6 +151,8 @@ void CGAME::Draw()
 		ball->Reset();
 		player1->Reset();
 		player2->Reset();
+		time1 = -1;
+		time2 = -1;
 		score1 = 0;
 		score2 = 0;
 	};
@@ -125,6 +166,8 @@ void CGAME::Draw()
 		ball->Reset();
 		player1->Reset();
 		player2->Reset();
+		time1 = -1;
+		time2 = -1;
 		foods = CFOOD::Generate();
 		score1 = 0;
 		score2 = 0;
@@ -133,19 +176,43 @@ void CGAME::Draw()
 	// LOSE because of time over
 	if (time1 == 5)
 	{
+		// ket qua choi
+		high_scores = CSAVE::Load_highscores();
+		for (int i = 0; i < high_scores.size(); i = i + 2)
+		{
+			cout << high_scores[i] << "         " << high_scores[i + 1] << endl;
+		}
+
+
 		cout << " TIME OVER,you lose!!!";
 		cout << "\n Press any key to play again ^^";
+
 		system("pause");
 		ball->Reset();
 		player1->Reset();
 		player2->Reset();
 		foods = CFOOD::Generate();
 		time1 = -1;
+		time2 = -1;
 		t = clock();
 		score1 = 0;
 		score2 = 0;
 	}
 
+	// Update coordinate food when save
+	if (save == true)
+	{
+		foods.clear();
+		CFOOD food;
+		for (int i = 5; i < file_save.size() - 1; i = i + 4)
+		{
+			food.SetTopLeftX(file_save[i]);
+			food.SetTopLeftY(file_save[i + 1]);
+			food.SetBotRightX(file_save[i + 2]);
+			food.SetBotRightY(file_save[i + 3]);
+			foods.push_back(food);
+		}
+	}
 	// Draw food
 	for (int i = 0; i < foods.size(); i++)
 	{
@@ -153,11 +220,11 @@ void CGAME::Draw()
 	}
 
 	// Draw obstacles
-	if (time1 < 5)
+	if (time1 < int(obstacles.size()) && time2 < (clock() - t) / 10000)
 	{
-		time1 = (clock() - t) / 10000;
+		time2 =(clock() - t) / 10000;
+		time1++;
 	}
-	obstacles = CFOOD::Obstacles();
 	for (int i = 0; i < time1; i++)
 	{
 		obstacles[i].Draw_obstacles();
@@ -200,6 +267,11 @@ void CGAME::Input()
 
 		if (current == 'q')
 			quit = true;
+
+		if (current == 'l')
+		{
+			CSAVE::Save(ball, player1, foods, time1); // save game
+		}
 	}
 
 	//Let CPU play for player2
@@ -283,10 +355,32 @@ void CGAME::Logic()
 			ball->changeDirection(obstacles[i].Check_collision(ball));
 		}
 	}
+
+	//CHECK AND DELETE----------------------------------------
+
+	/*for (int i = 0; i < time1; i++)
+	{
+		if (obstacles[i].Check_collision(ball) != STOP)
+		{
+			ball->changeDirection(obstacles[i].Check_collision(ball));
+			for (int j = i; j < int(obstacles.size()) - 1; j++)
+			{
+				obstacles[j] = obstacles[j + 1];
+			}
+			obstacles.pop_back();
+			time1--;
+		}
+	}*/
+
 }
 //hàm chạy game
 void CGAME::Run()
 {
+	// Unit obstacles
+	obstacles = CFOOD::Obstacles();
+
+
+
 	while (stylePlay < 1 || stylePlay > 3) {
 		stylePlay = ShowMenu();
 	}
@@ -300,17 +394,27 @@ void CGAME::Run()
 		playing_Food = true;
 		player2->setOriX(player2->getX() + 1);
 		player2->Reset();
+		t = clock();
 		break;
 	case 3:
+		save = true;
+		player2->setOriX(player2->getX() + 1);
+		player2->Reset();
+		file_save = CSAVE::Load_game();
+		time1 = file_save[file_save.size() - 1] - 1;
+		playing_Normal = false;
+		
+		break;
+	case 4:
 		quit = true;
 	}
 	
-	t = clock();
 	while (!quit)
 	{
 		Draw();
 		Input();
 		Logic();
+		save = false;
 	}
 }
 
@@ -322,7 +426,8 @@ int CGAME::ShowMenu()
 	cout << "|--------------------------------------------------|" << endl;
 	cout << "|                1. Play Normal Style              |" << endl;
 	cout << "|                2. Play Eat Food Style            |" << endl;
-	cout << "|                3. Quit                           |" << endl;
+	cout << "|                3. Load game                      |" << endl;
+	cout << "|                4. Quit                           |" << endl;
 	cout << "====================================================" << endl;
 	cout << "==  YOUR CHOOSE? "; 
 	cin >> choose;
