@@ -52,3 +52,11 @@ void CBALL::Move()
 		break;
 	}
 }
+void CBALL::SetX(int a)
+{
+	x = a;
+}
+void CBALL::SetY(int b)
+{
+	y = b;
+}
