@@ -18,6 +18,23 @@ CFOOD::~CFOOD()
 {
 }
 
+void CFOOD::SetTopLeftX( int a) {
+	_topLeft_x = a;
+}
+
+void CFOOD::SetTopLeftY(int a) {
+	_topLeft_y = a;
+}
+
+void CFOOD::SetBotRightX(int a) {
+	_botRight_x = a;
+}
+
+void CFOOD::SetBotRightY(int a) {
+	_botRight_y = a;
+}
+
+
 int CFOOD::TopLeftX() {
 	return _topLeft_x;
 }
@@ -83,11 +100,20 @@ vector<CFOOD> CFOOD::Obstacles()
 
 eDir CFOOD ::Check_collision(CBALL* ball)
 {
+
+	for (int i = _topLeft_y - 1; i < _botRight_y; i++)
+	{
+		if (_topLeft_x - 1 == ball->getX() && i == ball->getY() && ball->getDirection() == RIGHT) return LEFT;
+		if (_botRight_x == ball->getX() && i == ball->getY() && ball->getDirection() == LEFT) return RIGHT;
+	}
+
+
 	for (int i = _topLeft_y - 1 ; i < _botRight_y; i++)
 	{
 		if (_topLeft_x -1== ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNRIGHT ? DOWNLEFT : UPLEFT;
 		if (_botRight_x == ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNLEFT ? DOWNRIGHT : UPRIGHT;
 	}
+
 
 	for (int i = _topLeft_x -1; i <= _botRight_x; i++)
 	{
@@ -139,6 +165,13 @@ bool CFOOD::IsCollision(CFOOD another) {
 	if (_topLeft_x > another._botRight_x&& _botRight_x > another._botRight_x) return false;
 	if (_topLeft_y > another._botRight_y&& _botRight_y > another._botRight_y) return false;
 
+	return true;
+}
+
+bool CFOOD::IsCollisionball(CBALL* another) {
+
+	if (_topLeft_x < another->getX() && _botRight_x > another->getX()) return false;
+	if (_topLeft_y < another->getY() && _botRight_y > another->getY()) return false;
 	return true;
 }
 
