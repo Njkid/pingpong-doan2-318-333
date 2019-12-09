@@ -25,13 +25,15 @@ public:
 	int TopLeftY();
 	int BotRightX();
 	int BotRightY();
+	void SetTopLeftX(int a);
+	void SetTopLeftY(int a);
+	void SetBotRightX(int a);
+	void SetBotRightY(int a);
 
-
-	
 	CFOOD(int a, int b, int c, int d);
 	eDir Check_collision(CBALL* ball);
 	void Draw_food();
 	bool IsCollision(CFOOD);
+	bool IsCollisionball(CBALL*);
 	void Draw_obstacles();
 };
-
