@@ -6,6 +6,7 @@
 #include "CBALL.h"
 #include "CBAR.h"
 #include "CFOOD.h"
+#include "CSAVE.h"
 
 class CGAME
 {
@@ -25,8 +26,12 @@ private:
 	vector<CFOOD> obstacles;
 
 	int time1 = -1;
+	int time2 = -1;
 	clock_t t;
 	int stylePlay = 0;
+	bool save;
+	vector<int> file_save;
+	vector<string> high_scores;
 public:
 	CGAME(int, int);//truyền vào phím chơi game, căn chỉnh bóng và thanh chơi
 	~CGAME();
@@ -38,4 +43,3 @@ public:
 	int ShowMenu();
 	void hidecursor();
 };
-
