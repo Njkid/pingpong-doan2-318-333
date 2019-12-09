@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <iostream>
 #include <time.h>
 #include <conio.h>
@@ -25,5 +25,7 @@ public:
 		o << "Ball [" << c.x << "," << c.y << "][" << c.direction << "]";
 		return o;
 	}
-};
 
+	void SetX(int a);
+	void SetY(int b);
+};
