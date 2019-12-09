@@ -11,27 +11,42 @@ CSAVE::~CSAVE()
 {
 }
 
-void CSAVE::Save(CBALL ball, CBAR bar_left, CBAR bar_right, vector<CFOOD> food)
+void CSAVE::Save(CBALL *ball, CBAR *bar_left, vector<CFOOD> food, int time1)
 {
 	ofstream file;
 	file.open("Save_game.txt");
-	file << ball.getX();
-	file << ball.getY();
-	file << ball.getDirection();
-	file << bar_left.getX();
-	file << bar_left.getY();
-	file << bar_right.getX();
-	file << bar_right.getY();
+	file << ball->getX() << "\n";
+	file << ball->getY() << "\n";
+	file << ball->getDirection() << "\n";
+	file << bar_left->getX() << "\n";
+	file << bar_left->getY() << "\n";
 	for (int i = 0; i<int(food.size()); i++)
 	{
-		file << food[i].TopLeftX();
-		file << food[i].TopLeftY();
-		file << food[i].BotRightX();
-		file << food[i].BotRightY();
+		file << food[i].TopLeftX() << "\n";
+		file << food[i].TopLeftY() << "\n";
+		file << food[i].BotRightX() << "\n";
+		file << food[i].BotRightY() << "\n";
 	}
+	file << time1;
+	file.close();
 }
 
-void CSAVE::High_scores(int score)
+vector<int> CSAVE::Load_game()
+{
+	ifstream file;
+	vector<int> info;
+	string line;
+	file.open("Save_game.txt");
+	while (getline(file, line))
+	{
+		info.push_back(stoi(line));
+	}
+	file.close();
+	return info;
+}
+
+
+void CSAVE::High_scores(int score, string name1)
 {
 	fstream file;
 	vector <string> table;
@@ -71,4 +86,17 @@ void CSAVE::High_scores(int score)
 		}
 		file.close();
 	}
+}
+
+vector<string> CSAVE::Load_highscores()
+{
+	fstream file;
+	vector <string> table;
+	string line;
+	file.open("High_scores.txt", ios::in);
+	while (getline(file, line))
+	{
+		table.push_back(line);
+	}
+	return table;
 }
