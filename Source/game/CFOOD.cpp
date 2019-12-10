@@ -64,7 +64,7 @@ vector<CFOOD> CFOOD::Generate()
 	vector<CFOOD> result;
 	srand(time(NULL));
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 12; i++)
 	{
 		int x = rand() % 30 + 26;
 		int y = rand() % 15 + 2;
@@ -158,6 +158,18 @@ void CFOOD::Draw_food()
 	}
 }
 
+bool CFOOD::Draw_food(int x, int y)
+{
+	x += 1;
+	y += 1;
+	if (((x == _topLeft_x || x == _botRight_x) && y >= _topLeft_y && y <= _botRight_y) ||
+		((y == _topLeft_y || y == _botRight_y) && x >= _topLeft_x && x <= _botRight_x)) {
+		cout << "*";
+		return true;
+	}
+	return false;
+}
+
 bool CFOOD::IsCollision(CFOOD another) {
 
 	if (_topLeft_x < another._topLeft_x && _botRight_x < another._topLeft_x) return false;
@@ -208,4 +220,17 @@ void CFOOD::Draw_obstacles()
 	{
 		cout << "#";
 	}
+}
+
+bool CFOOD::Draw_obstacles(int x, int y)
+{
+	x += 1;
+	y += 1;
+
+	CFOOD pos(x, y, x, y);
+	if (pos.IsCollision(*this)) {
+		cout << "#";
+		return true;
+	}
+	return false;
 }

@@ -33,7 +33,9 @@ public:
 	CFOOD(int a, int b, int c, int d);
 	eDir Check_collision(CBALL* ball);
 	void Draw_food();
+	bool Draw_food(int, int);
 	bool IsCollision(CFOOD);
 	bool IsCollisionball(CBALL*);
 	void Draw_obstacles();
+	bool Draw_obstacles(int,int);
 };

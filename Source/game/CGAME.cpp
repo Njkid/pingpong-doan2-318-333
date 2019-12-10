@@ -16,13 +16,13 @@ CGAME::CGAME(int w, int h)
 	score1 = score2 = 0;
 	width = w; height = h;
 	//xếp bóng chính giữa màn hình
-	ball = new CBALL(w / 2, h / 2);
+	ball = new CBALL(w / 4, h / 2);
 	//căn chỉnh thanh chơi game
 	player1 = new CBAR(1, h / 2 - 3);
 	player2 = new CBAR(w - 2, h / 2 - 3);
 
 	//điều chỉnh thời gian update frame
-	speed = 1000.f / 120.f;
+	speed = 1000.f / 45.f;
 
 	//cài đặt chế độ chơi
 	playing_Food = false;
@@ -129,8 +129,36 @@ void CGAME::Draw()
 				printf("%c", 219); //player2
 			else if (player2x == j && player2y + 3 == i && playing_Normal)
 				printf("%c", 219); //player2
-			else
-				cout << " ";
+			else {
+
+				// Draw food or obstacles
+				bool space = true;
+				if (playing_Food) {
+					for (int k = 0; k < foods.size(); k++)
+					{
+						space = !(foods[k].Draw_food(j, i));
+						if (!space) break;
+					}
+
+					if (space) {
+
+						if (time1 < int(obstacles.size()) && time2 < (clock() - t) / 10000)
+						{
+							time2 = (clock() - t) / 10000;
+							time1++;
+						}
+
+						for (int k = 0; k < time1; k++)
+						{
+							space = !(obstacles[k].Draw_obstacles(j, i));
+							if (!space) break;
+						}
+					}
+				}
+
+				// There is nothing to draw
+				if (space) cout << " ";
+			}
 
 			if (j == width - 1)
 				printf("%c", 177);
@@ -213,27 +241,33 @@ void CGAME::Draw()
 			foods.push_back(food);
 		}
 	}
-	// Draw food
-	for (int i = 0; i < foods.size(); i++)
-	{
-		foods[i].Draw_food();
-	}
 
-	// Draw obstacles
-	if (time1 < int(obstacles.size()) && time2 < (clock() - t) / 10000)
-	{
-		time2 =(clock() - t) / 10000;
-		time1++;
-	}
-	for (int i = 0; i < time1; i++)
-	{
-		obstacles[i].Draw_obstacles();
-	}
+	//// Draw food
+	//if (playing_Food) {
+	//	for (int i = 0; i < foods.size(); i++)
+	//	{
+	//		foods[i].Draw_food();
+	//	}
+	//}
 
+	//// Draw obstacles
+	//if (playing_Food) {
+	//	if (time1 < int(obstacles.size()) && time2 < (clock() - t) / 10000)
+	//	{
+	//		time2 = (clock() - t) / 10000;
+	//		time1++;
+	//	}
+
+	//	for (int i = 0; i < time1; i++)
+	//	{
+	//		obstacles[i].Draw_obstacles();
+	//	}
+	//}
 
 	CFOOD::GotoXY(0, 0);
 	Sleep(int(speed));
 }
+
 //hàm bắt phím khi chơi
 void CGAME::Input()
 {
@@ -329,30 +363,32 @@ void CGAME::Logic()
 	if (ballx == 0)
 		ScoreUp(player2);
 
-	//collision with food
-	eDir collisionFood = (eDir)0;
-	for (int i = 0; i < foods.size(); i++)
-	{
-		collisionFood = foods[i].Check_collision(ball);
-		if (collisionFood == 0) continue;
-		ball->changeDirection(collisionFood);
-
-		//Effect when collsion a food
-		//examble delete food
-		for (int j = i; j < foods.size() -1; j++)
+	if (playing_Food) {
+		//collision with food
+		eDir collisionFood = (eDir)0;
+		for (int i = 0; i < foods.size(); i++)
 		{
-			foods[j] = foods[j + 1];
+			collisionFood = foods[i].Check_collision(ball);
+			if (collisionFood == 0) continue;
+			ball->changeDirection(collisionFood);
+
+			//Effect when collsion a food
+			//examble delete food
+			for (int j = i; j < foods.size() - 1; j++)
+			{
+				foods[j] = foods[j + 1];
+			}
+			foods.pop_back();
+
 		}
-		foods.pop_back();
 
-	}
-
-	// check collision with obstacles
-	for (int i = 0; i < time1; i++)
-	{
-		if (obstacles[i].Check_collision(ball) != STOP)
+		// check collision with obstacles
+		for (int i = 0; i < time1; i++)
 		{
-			ball->changeDirection(obstacles[i].Check_collision(ball));
+			if (obstacles[i].Check_collision(ball) != STOP)
+			{
+				ball->changeDirection(obstacles[i].Check_collision(ball));
+			}
 		}
 	}
 
@@ -403,6 +439,7 @@ void CGAME::Run()
 		file_save = CSAVE::Load_game();
 		time1 = file_save[file_save.size() - 1] - 1;
 		playing_Normal = false;
+		playing_Food = true;
 		
 		break;
 	case 4:
