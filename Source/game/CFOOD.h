@@ -13,6 +13,7 @@ private:
 	int _topLeft_y;
 	int _botRight_x;
 	int _botRight_y;
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 
 public:
 	CFOOD();
@@ -20,6 +21,7 @@ public:
 	static void GotoXY(int x, int y);
 	static vector<CFOOD> Generate();
 	static vector<CFOOD> Obstacles();
+	static vector<CFOOD> Prize();
 public:
 	int TopLeftX();
 	int TopLeftY();
@@ -38,4 +40,7 @@ public:
 	bool IsCollisionball(CBALL*);
 	void Draw_obstacles();
 	bool Draw_obstacles(int,int);
+
+	CFOOD CreatePrize();
+	bool Draw_prize(int, int);
 };

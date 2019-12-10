@@ -98,6 +98,54 @@ vector<CFOOD> CFOOD::Obstacles()
 	return result;
 }
 
+vector<CFOOD> CFOOD::Prize()
+{
+	vector<CFOOD> result;
+
+	for (int i = 0; i < 4; i++)
+	{
+		int x = rand() % 30 + 26;
+		int y = rand() % 15 + 2;
+		CFOOD f(x, y, x + 2, y + 1);
+
+		int j = 0;
+		for (; j < result.size(); j++)
+		{
+			if (f.IsCollision(result[j])) {
+				i--;
+				break;
+			}
+		}
+
+		if (j == result.size()) result.push_back(f);
+	}
+
+	return result;
+}
+
+CFOOD CFOOD::CreatePrize() {
+	int x = rand() % 30 + 26;
+	int y = rand() % 15 + 2;
+	CFOOD f(x, y, x+2, y+1);
+
+	return f;
+}
+
+bool CFOOD::Draw_prize(int x, int y)
+{
+	x += 1;
+	y += 1;
+
+	CFOOD pos(x, y, x, y);
+	if (pos.IsCollision(*this)) {
+		SetConsoleTextAttribute(console, 14);
+		cout << "?";
+		SetConsoleTextAttribute(console, 7);
+		return true;
+	}
+	return false;
+}
+
 eDir CFOOD ::Check_collision(CBALL* ball)
 {
 
@@ -164,7 +212,9 @@ bool CFOOD::Draw_food(int x, int y)
 	y += 1;
 	if (((x == _topLeft_x || x == _botRight_x) && y >= _topLeft_y && y <= _botRight_y) ||
 		((y == _topLeft_y || y == _botRight_y) && x >= _topLeft_x && x <= _botRight_x)) {
+		SetConsoleTextAttribute(console, 10);
 		cout << "*";
+		SetConsoleTextAttribute(console, 7);
 		return true;
 	}
 	return false;
@@ -229,7 +279,9 @@ bool CFOOD::Draw_obstacles(int x, int y)
 
 	CFOOD pos(x, y, x, y);
 	if (pos.IsCollision(*this)) {
+		SetConsoleTextAttribute(console, 12);
 		cout << "#";
+		SetConsoleTextAttribute(console, 7);
 		return true;
 	}
 	return false;

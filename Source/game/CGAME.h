@@ -24,6 +24,7 @@ private:
 	bool playing_Food;
 	vector<CFOOD> foods;
 	vector<CFOOD> obstacles;
+	vector<CFOOD> prizes;
 
 	int time1 = -1;
 	int time2 = -1;
@@ -32,7 +33,9 @@ private:
 	bool save;
 	vector<int> file_save;
 	vector<string> high_scores;
+	HANDLE console;
 public:
+	
 	CGAME(int, int);//truyền vào phím chơi game, căn chỉnh bóng và thanh chơi
 	~CGAME();
 	void ScoreUp(CBAR*);//Tăng điểm khi đối phương để lọt bóng

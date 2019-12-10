@@ -4,6 +4,7 @@ CGAME::CGAME(int w, int h)
 {
 	srand(time(NULL));
 	hidecursor();
+	console = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	quit = false;
 	//phím chơi game
@@ -22,7 +23,7 @@ CGAME::CGAME(int w, int h)
 	player2 = new CBAR(w - 2, h / 2 - 3);
 
 	//điều chỉnh thời gian update frame
-	speed = 1000.f / 45.f;
+	speed = 1000.f / 60.f;
 
 	//cài đặt chế độ chơi
 	playing_Food = false;
@@ -30,6 +31,7 @@ CGAME::CGAME(int w, int h)
 
 	//khởi tạo foods
 	foods = CFOOD::Generate();
+	prizes = CFOOD::Prize();
 }
 
 CGAME::~CGAME()
@@ -134,14 +136,15 @@ void CGAME::Draw()
 				// Draw food or obstacles
 				bool space = true;
 				if (playing_Food) {
+					
 					for (int k = 0; k < foods.size(); k++)
 					{
 						space = !(foods[k].Draw_food(j, i));
 						if (!space) break;
 					}
-
+					
 					if (space) {
-
+						
 						if (time1 < int(obstacles.size()) && time2 < (clock() - t) / 10000)
 						{
 							time2 = (clock() - t) / 10000;
@@ -153,7 +156,19 @@ void CGAME::Draw()
 							space = !(obstacles[k].Draw_obstacles(j, i));
 							if (!space) break;
 						}
+						
 					}
+
+					if (space) {
+						
+						for (int k = 0; k < prizes.size(); k++)
+						{
+							space = !(prizes[k].Draw_prize(j, i));
+							if (!space) break;
+						}
+				
+					}
+
 				}
 
 				// There is nothing to draw
@@ -324,6 +339,7 @@ void CGAME::Input()
 		player1->moveUp();
 	}
 }
+
 //hàm xử lý chính
 void CGAME::Logic()
 {
