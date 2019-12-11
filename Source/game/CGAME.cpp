@@ -214,6 +214,13 @@ void CGAME::Draw()
 		// WIN for playing with style Eating Food
 		if (foods.size() == 0) {
 			cout << " Congrats,you won!!!";
+			cout << " Enter your name: ";
+			string name = "";
+			while (name[0] < 32) {
+				getline(cin, name);
+			}
+			CSAVE::High_scores(score1,name);
+			ShowTopScore();
 			cout << "\n Press any key to play again ^^";
 			system("pause");
 			system("cls");
@@ -235,11 +242,13 @@ void CGAME::Draw()
 		if (time1 == 5)
 		{
 			// ket qua choi
-			high_scores = CSAVE::Load_highscores();
+			/*high_scores = CSAVE::Load_highscores();
 			for (int i = 0; i < high_scores.size(); i = i + 2)
 			{
 				cout << high_scores[i] << "         " << high_scores[i + 1] << endl;
-			}
+			}*/
+
+			ShowTopScore();
 
 
 			cout << " TIME OVER,you lose!!!";
@@ -669,6 +678,18 @@ void CGAME::Run()
 		Input();
 		Logic();
 		save = false;
+	}
+}
+
+void CGAME::ShowTopScore()
+{
+	cout << "==TOP HIGH SCORES===" << endl;
+	vector<string> table = CSAVE::Load_highscores();
+	for (int i = 0; i < table.size(); i++)
+	{
+		cout << "Top " << i / 2 + 1 << ": ";
+		cout << table[i++];
+		cout << "   >>  " << table[i] << endl;
 	}
 }
 

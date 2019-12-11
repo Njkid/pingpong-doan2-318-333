@@ -43,6 +43,7 @@ public:
 	void Input();//hàm bắt phím khi chơi
 	void Logic();//hàm xử lý chính
 	void Run();//hàm chạy game
+	void ShowTopScore();
 	int ShowMenu();
 	void hidecursor();
 };

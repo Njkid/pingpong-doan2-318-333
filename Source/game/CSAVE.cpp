@@ -74,7 +74,7 @@ void CSAVE::High_scores(int score, string name1)
 	vector <string> name;
 	string line;
 	file.open("High_scores.txt", ios::in);
-	if (file.fail() == false)
+	if (file.good())
 	{
 		while (getline(file, line))
 		{
@@ -82,13 +82,15 @@ void CSAVE::High_scores(int score, string name1)
 			getline(file, line);
 			table.push_back(line);
 		}
+		name.push_back(name1);
+		table.push_back(to_string(score));
 		file.close();
 		file.open("High_scores.txt", ios::out);
 		for (int i = 0; i<int(table.size()) - 1; i++)
 		{
 			for (int j = i + 1; j<int(table.size()); j++)
 			{
-				if (table[j] > table[i])
+				if (stoi(table[j]) > stoi(table[i]))
 				{
 					string c;
 					c = table[i];
@@ -104,6 +106,9 @@ void CSAVE::High_scores(int score, string name1)
 		{
 			file << name[i] << "\n";
 			file << table[i] << "\n";
+
+			// Save only top 15
+			if (i >= 15) break;
 		}
 		file.close();
 	}
