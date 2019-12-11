@@ -23,7 +23,7 @@ CGAME::CGAME(int w, int h)
 	player2 = new CBAR(w - 2, h / 2 - 3);
 
 	//điều chỉnh thời gian update frame
-	speed = 1000.f / 60.f;
+	speed = 1000.f / 30.f;
 
 	//cài đặt chế độ chơi
 	playing_Food = false;
@@ -144,17 +144,20 @@ void CGAME::Draw()
 					}
 					
 					if (space) {
-						
-						if (time1 < int(obstacles.size()) && time2 < (clock() - t) / 10000)
-						{
-							time2 = (clock() - t) / 10000;
-							time1++;
-						}
 
 						for (int k = 0; k < time1; k++)
 						{
 							space = !(obstacles[k].Draw_obstacles(j, i));
 							if (!space) break;
+						}
+
+						if (space)
+						if (obstacles.size() > 5) {
+							for (int k = 5; k < obstacles.size(); k++)
+							{
+								space = !(obstacles[k].Draw_obstacles(j, i));
+								if (!space) break;
+							}
 						}
 						
 					}
@@ -185,61 +188,75 @@ void CGAME::Draw()
 		printf("%c", 177);
 	cout << endl;
 
-	//Win for playing with style Normal
-	cout << "Player 1: " << score1 << endl << "Player 2: " << score2 << endl;
-	if (score1 == 5 || score2 == 5) {
-		cout << " Congrats,you won!!!";
-		cout << "\n Press any key to play again ^^";
-		system("pause");
-		ball->Reset();
-		player1->Reset();
-		player2->Reset();
-		time1 = -1;
-		time2 = -1;
-		score1 = 0;
-		score2 = 0;
-	};
-
-
-	// WIN for playing with style Eating Food
-	if (foods.size() == 0) {
-		cout << " Congrats,you won!!!";
-		cout << "\n Press any key to play again ^^";
-		system("pause");
-		ball->Reset();
-		player1->Reset();
-		player2->Reset();
-		time1 = -1;
-		time2 = -1;
-		foods = CFOOD::Generate();
-		score1 = 0;
-		score2 = 0;
+	//Process information for playing with style Normal
+	if (playing_Normal) {
+		cout << "Player 1: " << score1 << endl << "Player 2: " << score2 << endl;
+		if (score1 == 5 || score2 == 5) {
+			cout << " Congrats,you won!!!";
+			cout << "\n Press any key to play again ^^";
+			system("pause");
+			ball->Reset();
+			player1->Reset();
+			player2->Reset();
+			time1 = -1;
+			time2 = -1;
+			score1 = 0;
+			score2 = 0;
+		};
 	}
 
-	// LOSE because of time over
-	if (time1 == 5)
-	{
-		// ket qua choi
-		high_scores = CSAVE::Load_highscores();
-		for (int i = 0; i < high_scores.size(); i = i + 2)
-		{
-			cout << high_scores[i] << "         " << high_scores[i + 1] << endl;
+	//Process information for playing with style Eating Food
+	if (playing_Food) {
+		cout << "YOUR SCORE: " << score1 << endl;
+
+		// WIN for playing with style Eating Food
+		if (foods.size() == 0) {
+			cout << " Congrats,you won!!!";
+			cout << "\n Press any key to play again ^^";
+			system("pause");
+			system("cls");
+			ball->Reset();
+			player1->Reset();
+			player2->Reset();
+			time1 = -1;
+			time2 = -1;
+			foods = CFOOD::Generate();
+			prizes = CFOOD::Prize();
+			obstacles = CFOOD::Obstacles();
+			score1 = 0;
+			score2 = 0;
+			speed = 1000.f / 30.f;
 		}
 
+		// LOSE because of time over
+		if (time1 == 5)
+		{
+			// ket qua choi
+			high_scores = CSAVE::Load_highscores();
+			for (int i = 0; i < high_scores.size(); i = i + 2)
+			{
+				cout << high_scores[i] << "         " << high_scores[i + 1] << endl;
+			}
 
-		cout << " TIME OVER,you lose!!!";
-		cout << "\n Press any key to play again ^^";
 
-		system("pause");
-		ball->Reset();
-		player1->Reset();
-		player2->Reset();
-		foods = CFOOD::Generate();
-		time1 = -1;
-		time2 = -1;
-		t = clock();
-		score1 = 0;
-		score2 = 0;
+			cout << " TIME OVER,you lose!!!";
+			cout << "\n Press any key to play again ^^";
+
+			system("pause");
+			system("cls");
+			ball->Reset();
+			player1->Reset();
+			player2->Reset();
+			foods = CFOOD::Generate();
+			prizes = CFOOD::Prize();
+			obstacles = CFOOD::Obstacles();
+			time1 = -1;
+			time2 = -1;
+			t = clock();
+			score1 = 0;
+			score2 = 0;
+			speed = 1000.f / 30.f;
+		}
 	}
 
 	// Update coordinate food when save
@@ -266,18 +283,18 @@ void CGAME::Draw()
 	//}
 
 	//// Draw obstacles
-	//if (playing_Food) {
-	//	if (time1 < int(obstacles.size()) && time2 < (clock() - t) / 10000)
-	//	{
-	//		time2 = (clock() - t) / 10000;
-	//		time1++;
-	//	}
+	if (playing_Food) {
+		if (time1 < int(obstacles.size()) && time2 < (clock() - t) / 10000)
+		{
+			time2 = (clock() - t) / 10000;
+			time1++;
+		}
 
 	//	for (int i = 0; i < time1; i++)
 	//	{
 	//		obstacles[i].Draw_obstacles();
 	//	}
-	//}
+	}
 
 	CFOOD::GotoXY(0, 0);
 	Sleep(int(speed));
@@ -332,10 +349,10 @@ void CGAME::Input()
 	}*/
 
 	//Let CPU play for player1
-	if (bally > player1y + 2 && player1y < 17) {
+	if (bally > player1y + 1 && player1y < 16) {
 		player1->moveDown();
 	}
-	if (bally < player1y + 2 && player1y > 0) {
+	if (bally < player1y + 1 && player1y > 0) {
 		player1->moveUp();
 	}
 }
@@ -353,14 +370,50 @@ void CGAME::Logic()
 	//left bar
 	for (int i = 0; i < 4; i++)
 		if (ballx == player1x + 1)
-			if (bally == player1y + i)
-				ball->changeDirection((eDir)((rand() % 3) + 4));
+			if (bally == player1y + i) {
+				speed *= 0.9f;
+				if (ball->getDirection() == LEFT) {
+					ball->changeDirection((eDir)(RIGHT));
+					if (player1->getOldY() > player1y) {
+						ball->changeDirection((eDir)(UPRIGHT));
+					}
+					if (player1->getOldY() < player1y) {
+						ball->changeDirection((eDir)(DOWNRIGHT));
+					}
+				}
+
+				if (ball->getDirection() == UPLEFT) {
+					ball->changeDirection((eDir)(UPRIGHT));
+					if (player1->getOldY() < player1y) {
+						ball->changeDirection((eDir)(RIGHT));
+					}
+				}
+
+				if (ball->getDirection() == DOWNLEFT) {
+					ball->changeDirection((eDir)(DOWNRIGHT));
+					if (player1->getOldY() > player1y) {
+						ball->changeDirection((eDir)(RIGHT));
+					}
+				}
+			}
 
 	//right bar
 	for (int i = 0; i < 4; i++)
 		if (ballx == player2x - 1)
 			if (bally == player2y + i)
-				ball->changeDirection((eDir)((rand() % 3) + 1));
+			{
+				if (ball->getDirection() == RIGHT) {
+					ball->changeDirection((eDir)(LEFT));
+				}
+
+				if (ball->getDirection() == UPRIGHT) {
+					ball->changeDirection((eDir)(UPLEFT));
+				}
+
+				if (ball->getDirection() == DOWNRIGHT) {
+					ball->changeDirection((eDir)(DOWNLEFT));
+				}
+			}
 
 	//bottom wall
 	if (bally == height - 1)
@@ -396,6 +449,71 @@ void CGAME::Logic()
 			}
 			foods.pop_back();
 
+			// Gain score
+			score1 += 1;
+		}
+
+		//collision with prizes
+		collisionFood = (eDir)0;
+		for (int i = 0; i < prizes.size(); i++)
+		{
+			collisionFood = prizes[i].Check_collision(ball);
+			if (collisionFood == 0) continue;
+			//ball->changeDirection(collisionFood);
+
+			//Effect when collsion a food
+
+			// Add buff
+			int buff = rand() % 3;
+			switch (buff)
+			{
+			case 0:
+				score1 *= 2;
+				SetConsoleTextAttribute(console, 236);
+				CFOOD::GotoXY(ballx - 5, bally);
+				cout << "BUFF SCOREx2";
+				Sleep(600);
+				CFOOD::GotoXY(ballx - 5, bally);
+				SetConsoleTextAttribute(console, 7);
+				cout << "             ";
+				CFOOD::GotoXY(0, 0);
+				
+				break;
+			case 1:
+				score1 *= 3;
+				SetConsoleTextAttribute(console, 236);
+				CFOOD::GotoXY(ballx - 5, bally);
+				cout << "BUFF SCOREx3";
+				Sleep(600);
+				CFOOD::GotoXY(ballx - 5, bally);
+				SetConsoleTextAttribute(console, 7);
+				cout << "             ";
+				
+				CFOOD::GotoXY(0, 0);
+				break;
+			case 2:
+				SetConsoleTextAttribute(console, 192);
+				CFOOD::GotoXY(ballx - 5, bally);
+				cout << "WALL! :v";
+				obstacles.push_back(prizes[i]);
+				Sleep(600);
+				CFOOD::GotoXY(ballx - 5, bally);
+				SetConsoleTextAttribute(console, 7);
+				cout << "             ";
+				
+				CFOOD::GotoXY(0, 0);
+				
+				break;
+			default:
+				break;
+			}
+
+			//delete prizes
+			for (int j = i; j < prizes.size() - 1; j++)
+			{
+				prizes[j] = prizes[j + 1];
+			}
+			prizes.pop_back();
 		}
 
 		// check collision with obstacles
@@ -404,6 +522,16 @@ void CGAME::Logic()
 			if (obstacles[i].Check_collision(ball) != STOP)
 			{
 				ball->changeDirection(obstacles[i].Check_collision(ball));
+			}
+		}
+
+		if (obstacles.size() > 5) {
+			for (int k = 5; k < obstacles.size(); k++)
+			{
+				if (obstacles[k].Check_collision(ball) != STOP)
+				{
+					ball->changeDirection(obstacles[k].Check_collision(ball));
+				}
 			}
 		}
 	}

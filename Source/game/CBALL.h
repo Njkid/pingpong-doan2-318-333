@@ -18,7 +18,7 @@ public:
 	void randomDirection();//tạo hướng bóng ngẫu nhiên đầu game
 	inline int getX() { return x; }
 	inline int getY() { return y; }
-	inline eDir getDirection() { return direction; }
+	inline eDir getDirection() { return (eDir) direction; }
 	void Move();//xử lý di chuyển của bóng
 	friend ostream& operator<<(ostream& o, CBALL c)
 	{

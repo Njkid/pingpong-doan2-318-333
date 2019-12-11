@@ -138,7 +138,7 @@ bool CFOOD::Draw_prize(int x, int y)
 
 	CFOOD pos(x, y, x, y);
 	if (pos.IsCollision(*this)) {
-		SetConsoleTextAttribute(console, 14);
+		SetConsoleTextAttribute(console, 236);
 		cout << "?";
 		SetConsoleTextAttribute(console, 7);
 		return true;
@@ -212,11 +212,20 @@ bool CFOOD::Draw_food(int x, int y)
 	y += 1;
 	if (((x == _topLeft_x || x == _botRight_x) && y >= _topLeft_y && y <= _botRight_y) ||
 		((y == _topLeft_y || y == _botRight_y) && x >= _topLeft_x && x <= _botRight_x)) {
-		SetConsoleTextAttribute(console, 10);
+		SetConsoleTextAttribute(console, 175);
 		cout << "*";
 		SetConsoleTextAttribute(console, 7);
 		return true;
 	}
+
+	CFOOD pos(x, y, x, y);
+	if (pos.IsCollision(*this)) {
+		SetConsoleTextAttribute(console, 175);
+		cout << " ";
+		SetConsoleTextAttribute(console, 7);
+		return true;
+	}
+
 	return false;
 }
 
