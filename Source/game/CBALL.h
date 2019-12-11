@@ -11,6 +11,7 @@ private:
 	int x, y;
 	int originalX, originalY;
 	eDir direction;
+	bool destroyer;
 public:
 	CBALL(int,int);//vị trí ban đầu của bóng
 	void Reset();//cập nhật vị trí bóng
@@ -18,6 +19,7 @@ public:
 	void randomDirection();//tạo hướng bóng ngẫu nhiên đầu game
 	inline int getX() { return x; }
 	inline int getY() { return y; }
+	inline bool isDestroyer() { return destroyer; }
 	inline eDir getDirection() { return (eDir) direction; }
 	void Move();//xử lý di chuyển của bóng
 	friend ostream& operator<<(ostream& o, CBALL c)
@@ -28,4 +30,5 @@ public:
 
 	void SetX(int a);
 	void SetY(int b);
+	void SetDestroyer(bool value);
 };

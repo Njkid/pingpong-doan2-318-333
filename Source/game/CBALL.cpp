@@ -6,12 +6,14 @@ CBALL::CBALL(int posX, int posY)
 	originalY = posY;
 	x = posX; y = posY;
 	direction = STOP;
+	destroyer = false;
 }
 //cập nhật vị trí bóng
 void CBALL::Reset()
 {
 	x = originalX; y = originalY;
 	direction = STOP;
+	destroyer = false;
 }
 //đổi hướng bóng
 void CBALL::changeDirection(eDir d)
@@ -59,4 +61,9 @@ void CBALL::SetX(int a)
 void CBALL::SetY(int b)
 {
 	y = b;
+}
+
+void CBALL::SetDestroyer(bool value)
+{
+	destroyer = value;
 }

@@ -102,8 +102,10 @@ void CGAME::Draw()
 
 			if (j == 0)
 				printf("%c", 177);
-			if (ballx == j && bally == i && save != true)
-				cout << "O"; //ball
+			if (ballx == j && bally == i && save != true) {
+				if (ball->isDestroyer()) cout << "x";
+				else cout << "o"; //ball
+			}
 			else if(save == true && file_save[0] == j && file_save[1]== i)
 				cout << "O"; //ball saved
 			else if (player1x == j && player1y == i && save != true)
@@ -223,6 +225,7 @@ void CGAME::Draw()
 			foods = CFOOD::Generate();
 			prizes = CFOOD::Prize();
 			obstacles = CFOOD::Obstacles();
+			t = clock();
 			score1 = 0;
 			score2 = 0;
 			speed = 1000.f / 30.f;
@@ -464,7 +467,7 @@ void CGAME::Logic()
 			//Effect when collsion a food
 
 			// Add buff
-			int buff = rand() % 3;
+			int buff = rand() % 6;
 			switch (buff)
 			{
 			case 0:
@@ -504,6 +507,47 @@ void CGAME::Logic()
 				CFOOD::GotoXY(0, 0);
 				
 				break;
+
+			case 3:
+				SetConsoleTextAttribute(console, 236);
+				CFOOD::GotoXY(ballx - 5, bally);
+				cout << "ADD 3 FOODS";
+				Sleep(600);
+				CFOOD::GotoXY(ballx - 5, bally);
+				SetConsoleTextAttribute(console, 7);
+				cout << "             ";
+				CFOOD::GotoXY(0, 0);
+
+				CFOOD::AddFoods(foods, 3);
+				break;
+
+			case 4:
+
+				SetConsoleTextAttribute(console, 236);
+				CFOOD::GotoXY(ballx - 5, bally);
+				cout << "ADD 2 PRIZES";
+				Sleep(600);
+				CFOOD::GotoXY(ballx - 5, bally);
+				SetConsoleTextAttribute(console, 7);
+				cout << "             ";
+				CFOOD::GotoXY(0, 0);
+
+				CFOOD::AddPrizes(prizes, 2);
+				break;
+
+			case 5:
+
+				SetConsoleTextAttribute(console, 236);
+				CFOOD::GotoXY(ballx - 5, bally);
+				cout << ">DESTROYER!<";
+				Sleep(600);
+				CFOOD::GotoXY(ballx - 5, bally);
+				SetConsoleTextAttribute(console, 7);
+				cout << "             ";
+				CFOOD::GotoXY(0, 0);
+
+				ball->SetDestroyer(true);
+				break;
 			default:
 				break;
 			}
@@ -522,6 +566,7 @@ void CGAME::Logic()
 			if (obstacles[i].Check_collision(ball) != STOP)
 			{
 				ball->changeDirection(obstacles[i].Check_collision(ball));
+				if (ball->isDestroyer()) obstacles[i].SetTopLeftX(-1);
 			}
 		}
 
@@ -531,6 +576,7 @@ void CGAME::Logic()
 				if (obstacles[k].Check_collision(ball) != STOP)
 				{
 					ball->changeDirection(obstacles[k].Check_collision(ball));
+					if (ball->isDestroyer()) obstacles[k].SetTopLeftX(-1);
 				}
 			}
 		}

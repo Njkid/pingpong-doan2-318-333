@@ -22,6 +22,8 @@ public:
 	static vector<CFOOD> Generate();
 	static vector<CFOOD> Obstacles();
 	static vector<CFOOD> Prize();
+	static void AddFoods(vector<CFOOD>&, int);
+	static void AddPrizes(vector<CFOOD>&, int);
 public:
 	int TopLeftX();
 	int TopLeftY();
@@ -43,4 +45,5 @@ public:
 
 	CFOOD CreatePrize();
 	bool Draw_prize(int, int);
+	
 };

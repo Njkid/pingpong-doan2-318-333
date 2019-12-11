@@ -86,6 +86,7 @@ vector<CFOOD> CFOOD::Generate()
 	return result;
 }
 
+
 vector<CFOOD> CFOOD::Obstacles()
 {
 	vector<CFOOD> result;
@@ -146,8 +147,51 @@ bool CFOOD::Draw_prize(int x, int y)
 	return false;
 }
 
+void CFOOD::AddFoods(vector<CFOOD>& vec, int num)
+{
+	for (int i = 0; i < num; i++)
+	{
+		int x = rand() % 30 + 26;
+		int y = rand() % 15 + 2;
+		CFOOD f(x, y, x + 3, y + 2);
+
+		int j = 0;
+		for (; j < vec.size(); j++)
+		{
+			if (f.IsCollision(vec[j])) {
+				i--;
+				break;
+			}
+		}
+
+		if (j == vec.size()) vec.push_back(f);
+	}
+}
+
+void CFOOD::AddPrizes(vector<CFOOD>& vec, int num)
+{
+	for (int i = 0; i < num; i++)
+	{
+		int x = rand() % 30 + 26;
+		int y = rand() % 15 + 2;
+		CFOOD f(x, y, x + 2, y + 1);
+
+		int j = 0;
+		for (; j < vec.size(); j++)
+		{
+			if (f.IsCollision(vec[j])) {
+				i--;
+				break;
+			}
+		}
+
+		if (j == vec.size()) vec.push_back(f);
+	}
+}
+
 eDir CFOOD ::Check_collision(CBALL* ball)
 {
+	if (_topLeft_x < 0) return STOP;
 
 	for (int i = _topLeft_y - 1; i < _botRight_y; i++)
 	{
@@ -212,7 +256,7 @@ bool CFOOD::Draw_food(int x, int y)
 	y += 1;
 	if (((x == _topLeft_x || x == _botRight_x) && y >= _topLeft_y && y <= _botRight_y) ||
 		((y == _topLeft_y || y == _botRight_y) && x >= _topLeft_x && x <= _botRight_x)) {
-		SetConsoleTextAttribute(console, 175);
+		SetConsoleTextAttribute(console, 42);
 		cout << "*";
 		SetConsoleTextAttribute(console, 7);
 		return true;
@@ -231,6 +275,8 @@ bool CFOOD::Draw_food(int x, int y)
 
 bool CFOOD::IsCollision(CFOOD another) {
 
+	if (_topLeft_x < 0) return false;
+
 	if (_topLeft_x < another._topLeft_x && _botRight_x < another._topLeft_x) return false;
 	if (_topLeft_y < another._topLeft_y && _botRight_y < another._topLeft_y) return false;
 	if (_topLeft_x > another._botRight_x&& _botRight_x > another._botRight_x) return false;
@@ -240,7 +286,7 @@ bool CFOOD::IsCollision(CFOOD another) {
 }
 
 bool CFOOD::IsCollisionball(CBALL* another) {
-
+	if (_topLeft_x < 0) return false;
 	if (_topLeft_x < another->getX() && _botRight_x > another->getX()) return false;
 	if (_topLeft_y < another->getY() && _botRight_y > another->getY()) return false;
 	return true;
@@ -248,6 +294,8 @@ bool CFOOD::IsCollisionball(CBALL* another) {
 
 void CFOOD::Draw_obstacles()
 {
+	if (_topLeft_x < 0) return;
+
 	GotoXY(_topLeft_x, _topLeft_y);
 	for (int i = _topLeft_x; i <= _botRight_x; i++)
 	{
@@ -283,6 +331,8 @@ void CFOOD::Draw_obstacles()
 
 bool CFOOD::Draw_obstacles(int x, int y)
 {
+	if (_topLeft_x < 0) return false;
+
 	x += 1;
 	y += 1;
 
