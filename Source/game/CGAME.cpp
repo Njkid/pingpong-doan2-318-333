@@ -265,15 +265,42 @@ void CGAME::Draw()
 	// Update coordinate food when save
 	if (save == true)
 	{
+		score1 = file_save[5];
+
 		foods.clear();
+		int size_food = file_save[6]*4 + 7;
 		CFOOD food;
-		for (int i = 5; i < file_save.size() - 1; i = i + 4)
+		for (int i = 7; i < size_food; i = i + 4)
 		{
 			food.SetTopLeftX(file_save[i]);
 			food.SetTopLeftY(file_save[i + 1]);
 			food.SetBotRightX(file_save[i + 2]);
 			food.SetBotRightY(file_save[i + 3]);
 			foods.push_back(food);
+		}
+
+		obstacles.clear();
+		int size_obs = file_save[size_food]*4 + size_food + 1;
+
+		for (int i = size_food + 1; i < size_obs; i = i + 4)
+		{
+			food.SetTopLeftX(file_save[i]);
+			food.SetTopLeftY(file_save[i + 1]);
+			food.SetBotRightX(file_save[i + 2]);
+			food.SetBotRightY(file_save[i + 3]);
+			obstacles.push_back(food);
+		}
+
+		prizes.clear();
+		int size_prize = file_save[size_obs]*4 + size_obs + 1;
+
+		for (int i = size_obs + 1; i < size_prize; i = i + 4)
+		{
+			food.SetTopLeftX(file_save[i]);
+			food.SetTopLeftY(file_save[i + 1]);
+			food.SetBotRightX(file_save[i + 2]);
+			food.SetBotRightY(file_save[i + 3]);
+			prizes.push_back(food);
 		}
 	}
 
@@ -339,7 +366,7 @@ void CGAME::Input()
 
 		if (current == 'l')
 		{
-			CSAVE::Save(ball, player1, foods, time1); // save game
+			CSAVE::Save(ball, player1, score1, foods, obstacles, prizes, time1); // save game
 		}
 	}
 
