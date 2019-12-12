@@ -214,7 +214,7 @@ void CGAME::Draw()
 		// WIN for playing with style Eating Food
 		if (foods.size() == 0) {
 			cout << " Congrats,you won!!!";
-			cout << " Enter your name: ";
+			cout << " Enter your name:                                      " << endl;
 			string name = "";
 			while (name[0] < 32) {
 				getline(cin, name);
@@ -269,6 +269,8 @@ void CGAME::Draw()
 			score2 = 0;
 			speed = 1000.f / 30.f;
 		}
+
+		cout << "Key input: | 'W' : move up | 'S' : move down | 'L' : save game |";
 	}
 
 	// Update coordinate food when save
