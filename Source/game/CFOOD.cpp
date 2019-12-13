@@ -195,14 +195,14 @@ eDir CFOOD ::Check_collision(CBALL* ball)
 
 	for (int i = _topLeft_y - 1; i < _botRight_y; i++)
 	{
-		if (_topLeft_x - 1 == ball->getX() && i == ball->getY() && ball->getDirection() == RIGHT) return LEFT;
+		if (_topLeft_x - 2 == ball->getX() && i == ball->getY() && ball->getDirection() == RIGHT) return LEFT;
 		if (_botRight_x == ball->getX() && i == ball->getY() && ball->getDirection() == LEFT) return RIGHT;
 	}
 
 
 	for (int i = _topLeft_y - 1 ; i < _botRight_y; i++)
 	{
-		if (_topLeft_x -1== ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNRIGHT ? DOWNLEFT : UPLEFT;
+		if (_topLeft_x -2== ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNRIGHT ? DOWNLEFT : UPLEFT;
 		if (_botRight_x == ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNLEFT ? DOWNRIGHT : UPRIGHT;
 	}
 
