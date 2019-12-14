@@ -192,25 +192,28 @@ void CFOOD::AddPrizes(vector<CFOOD>& vec, int num)
 eDir CFOOD ::Check_collision(CBALL* ball)
 {
 	if (_topLeft_x < 0) return STOP;
+	int ballx = ball->getX() + 1;
+	int bally = ball->getY() + 1;
 
-	for (int i = _topLeft_y - 1; i < _botRight_y; i++)
+	for (int i = _topLeft_y ; i <= _botRight_y; i++)
 	{
-		if (_topLeft_x - 2 == ball->getX() && i == ball->getY() && ball->getDirection() == RIGHT) return LEFT;
-		if (_botRight_x == ball->getX() && i == ball->getY() && ball->getDirection() == LEFT) return RIGHT;
+		if (_topLeft_x - 1 == ballx && i == bally) {
+			if (ball->getDirection() == RIGHT)	return LEFT;
+			if (ball->getDirection() == DOWNRIGHT) return DOWNLEFT;
+			return UPLEFT;
+		}
+		if (_botRight_x + 1 == ballx && i == bally) {
+			if (ball->getDirection() == LEFT) return RIGHT;
+			if (ball->getDirection() == DOWNLEFT) return UPRIGHT;
+			return DOWNRIGHT;
+		}
 	}
 
 
-	for (int i = _topLeft_y - 1 ; i < _botRight_y; i++)
+	for (int i = _topLeft_x - 1; i <= _botRight_x + 1; i++)
 	{
-		if (_topLeft_x -2== ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNRIGHT ? DOWNLEFT : UPLEFT;
-		if (_botRight_x == ball->getX() && i == ball->getY()) return ball->getDirection() == DOWNLEFT ? DOWNRIGHT : UPRIGHT;
-	}
-
-
-	for (int i = _topLeft_x -1; i <= _botRight_x; i++)
-	{
-		if (_topLeft_y - 1 == ball->getY() && i == ball->getX()) return ball->getDirection() == DOWNRIGHT ? UPRIGHT : UPLEFT;
-		if (_botRight_y  -1 == ball->getY() && i == ball->getX()) return ball->getDirection() == UPRIGHT ? DOWNRIGHT : DOWNLEFT;
+		if (_topLeft_y - 1 == bally && i == ballx) return ball->getDirection() == DOWNRIGHT ? UPRIGHT : UPLEFT;
+		if (_botRight_y + 1 == bally && i == ballx) return ball->getDirection() == UPRIGHT ? DOWNRIGHT : DOWNLEFT;
 	}
 	return STOP;
 }
