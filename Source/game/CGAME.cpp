@@ -344,8 +344,6 @@ void CGAME::Draw()
 //hàm bắt phím khi chơi
 void CGAME::Input()
 {
-	ball->Move();
-
 	int ballx = ball->getX();
 	int bally = ball->getY();
 	int player1x = player1->getX();
@@ -401,6 +399,8 @@ void CGAME::Input()
 //hàm xử lý chính
 void CGAME::Logic()
 {
+	ball->Move();
+
 	int ballx = ball->getX();
 	int bally = ball->getY();
 	int player1x = player1->getX();
@@ -599,22 +599,27 @@ void CGAME::Logic()
 		}
 
 		// check collision with obstacles
+		eDir colli = (eDir)0;
 		for (int i = 0; i < time1; i++)
 		{
-			if (obstacles[i].Check_collision(ball) != STOP)
+			colli = obstacles[i].Check_collision(ball);
+			if (colli != STOP)
 			{
-				ball->changeDirection(obstacles[i].Check_collision(ball));
+				ball->changeDirection(colli);
 				if (ball->isDestroyer()) obstacles[i].SetTopLeftX(-1);
+				break;
 			}
 		}
 
 		if (obstacles.size() > 5) {
 			for (int k = 5; k < obstacles.size(); k++)
 			{
-				if (obstacles[k].Check_collision(ball) != STOP)
+				colli = obstacles[k].Check_collision(ball);
+				if (colli!= STOP)
 				{
-					ball->changeDirection(obstacles[k].Check_collision(ball));
+					ball->changeDirection(colli);
 					if (ball->isDestroyer()) obstacles[k].SetTopLeftX(-1);
+					break;
 				}
 			}
 		}
